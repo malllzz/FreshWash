@@ -64,19 +64,16 @@ const History = () => {
         let selectedRating = 0;
 
         stars.forEach((star, index) => {
-          // Hover effect
           star.addEventListener("mouseover", () => {
             stars.forEach((s, i) => {
               s.classList.toggle("hovered", i <= index);
             });
           });
 
-          // Remove hover effect
           star.addEventListener("mouseout", () => {
             stars.forEach((s) => s.classList.remove("hovered"));
           });
 
-          // Click to select rating
           star.addEventListener("click", () => {
             selectedRating = index + 1;
             stars.forEach((s, i) => {

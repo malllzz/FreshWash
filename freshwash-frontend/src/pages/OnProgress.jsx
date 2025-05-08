@@ -12,7 +12,6 @@ const OnProgress = () => {
   useEffect(() => {
     const fetchInProgressReservation = async () => {
       try {
-        // Gantilah dengan API endpoint yang benar
         const response = await axios.get("/api/user/reservations/on-progress");
 
         if (
@@ -20,15 +19,14 @@ const OnProgress = () => {
           Array.isArray(response.data) &&
           response.data.length > 0
         ) {
-          setReservation(response.data[0]); // Ambil reservasi pertama yang sedang berjalan
+          setReservation(response.data[0]);
         } else {
-          setReservation(null); // Tidak ada pencucian yang sedang berjalan
+          setReservation(null);
         }
         setLoading(false);
       } catch (error) {
         setError("Gagal memuat data pencucian.");
         setLoading(false);
-        // Menampilkan pesan error menggunakan SweetAlert
         Swal.fire({
           icon: "error",
           title: "Oops...",

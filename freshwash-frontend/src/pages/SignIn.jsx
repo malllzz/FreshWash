@@ -21,10 +21,13 @@ const SignIn = () => {
     setError("");
 
     // Mock login check
-    if (formData.email === "admin@freshwash.com" && formData.password === "admin123") {
-      // Admin login
+    // Admin credentials
+    if (
+      formData.email === "admin@freshwash.com" &&
+      formData.password === "admin123"
+    ) {
       localStorage.setItem("token", "mock-admin-token");
-      localStorage.setItem("role", "admin");  // set role to 'admin'
+      localStorage.setItem("role", "admin");
 
       Swal.fire({
         icon: "success",
@@ -35,10 +38,13 @@ const SignIn = () => {
       });
 
       navigate("/");
-    } else if (formData.email === "user@freshwash.com" && formData.password === "user123") {
-      // Regular user login
+    } // User credentials
+    else if (
+      formData.email === "user@freshwash.com" &&
+      formData.password === "user123"
+    ) {
       localStorage.setItem("token", "mock-user-token");
-      localStorage.setItem("role", "user");  // set role to 'user'
+      localStorage.setItem("role", "user");
 
       Swal.fire({
         icon: "success",
@@ -73,7 +79,10 @@ const SignIn = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email address
             </label>
             <div className="mt-2">
@@ -96,11 +105,17 @@ const SignIn = () => {
           {/* Password */}
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <div className="text-sm">
-                <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                <a
+                  href="#"
+                  className="font-semibold text-indigo-600 hover:text-indigo-500"
+                >
                   Forgot password?
                 </a>
               </div>
@@ -123,11 +138,7 @@ const SignIn = () => {
           </div>
 
           {/* Error Message */}
-          {error && (
-            <div className="text-sm text-red-600">
-              {error}
-            </div>
-          )}
+          {error && <div className="text-sm text-red-600">{error}</div>}
 
           {/* Submit Button */}
           <div>

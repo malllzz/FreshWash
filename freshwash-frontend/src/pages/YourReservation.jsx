@@ -5,20 +5,19 @@ import MainLayout from "../layouts/MainLayout";
 import { motion } from "framer-motion";
 
 const YourReservation = () => {
-  const [reservations, setReservations] = useState([]); // Defaultnya adalah array kosong
-  const [loading, setLoading] = useState(true); // Status loading
-  const [error, setError] = useState(null); // Status error
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchReservations = async () => {
       try {
         const response = await axios.get("/api/user/reservations");
 
-        // Pastikan bahwa response.data adalah array
         if (Array.isArray(response.data)) {
           setReservations(response.data);
         } else {
-          setReservations([]); // Jika data tidak berupa array, set ke array kosong
+          setReservations([]);
         }
         setLoading(false);
       } catch (error) {

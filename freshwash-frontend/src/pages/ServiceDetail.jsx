@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import { Star } from "lucide-react";
 
-// Data layanan berdasarkan slug
+// Dummy data layanan
 const services = {
   "express-wash": {
     title: "Express Wash",
@@ -22,7 +22,7 @@ const services = {
   },
 };
 
-// Review dummy berdasarkan slug
+// Dummy data ulasan
 const dummyReviews = {
   "full-wash": [
     { rating: 5, comment: "Sangat bersih dan rapi, puas banget!" },
@@ -45,7 +45,6 @@ const ServiceDetail = () => {
           <>
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-3xl font-bold">{service.title}</h1>
-              {/* Tombol Reservasi di kanan */}
               <Link
                 to="/reservation"
                 className="inline-block bg-gray-800 hover:bg-gray-900 text-white font-semibold px-6 py-3 rounded-full transition"

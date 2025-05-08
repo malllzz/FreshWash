@@ -40,17 +40,14 @@ const Reservation = () => {
     e.preventDefault();
     console.log("Form Data:", formData);
 
-    // Mendapatkan tanggal dan waktu saat ini
     const now = new Date();
-    const currentDate = now.toISOString().split("T")[0]; // Format yyyy-mm-dd
+    const currentDate = now.toISOString().split("T")[0];
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
 
-    // Mendapatkan tanggal dan waktu dari input form
     const selectedDate = formData.date;
     const [selectedHour, selectedMinute] = formData.time.split(":").map(Number);
-
-    // Cek apakah tanggal yang dipilih lebih kecil dari tanggal sekarang
+    // Check if the selected date is in the past
     if (selectedDate < currentDate) {
       await Swal.fire({
         icon: "error",
@@ -60,8 +57,8 @@ const Reservation = () => {
       });
       return;
     }
-
-    // Jika tanggal sama dengan hari ini, pastikan waktu yang dipilih lebih besar dari waktu saat ini
+    
+    // Check if the selected date is today and the time is in the past
     if (selectedDate === currentDate) {
       if (
         selectedHour < currentHour ||
@@ -77,7 +74,7 @@ const Reservation = () => {
       }
     }
 
-    // Validasi waktu antara 08:00 hingga 21:00
+    // Check if the selected time is within the allowed range (08:00 - 21:00)
     if (
       selectedHour < 8 ||
       selectedHour > 21 ||

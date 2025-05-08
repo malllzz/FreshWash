@@ -27,7 +27,7 @@ const EditProfile = () => {
           oldPassword: "",
           newPassword: "",
         });
-        setPhotoPreview(response.data.photoUrl); // existing profile photo
+        setPhotoPreview(response.data.photoUrl);
       } catch (error) {
         Swal.fire("Error", "Failed to load profile data.", "error");
       }

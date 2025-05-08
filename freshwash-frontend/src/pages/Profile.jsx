@@ -133,7 +133,7 @@ const Profile = () => {
           {/* Signout */}
           <a
             href="/logout"
-            onClick={handleLogout} // Memanggil fungsi konfirmasi logout
+            onClick={handleLogout}
             className="flex items-center px-4 py-3 hover:bg-gray-50 text-red-600"
           >
             <LogOut className="w-5 h-5 mr-3" />

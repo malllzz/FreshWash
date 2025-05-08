@@ -3,7 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-// Fungsi untuk membuat slug dari title
+// Create a slug from the service title
 const slugify = (text) =>
   text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
 
@@ -41,7 +41,7 @@ const bundlings = [
   {
     title: "Bundling 5x Cuci Express",
     price: "Rp225.000",
-    serviceSlug: "express-wash", // Menambahkan serviceSlug
+    serviceSlug: "express-wash",
     features: [
       "Gratis 1x semir ban",
       "5 kali layanan Express Wash",
@@ -51,7 +51,7 @@ const bundlings = [
   {
     title: "Bundling Full Wash + Antar Jemput",
     price: "Rp400.000",
-    serviceSlug: "full-wash", // Menambahkan serviceSlug
+    serviceSlug: "full-wash",
     features: [
       "3x Full Wash",
       "Termasuk antar-jemput kendaraan",
@@ -61,7 +61,7 @@ const bundlings = [
   {
     title: "Bundling Home Service",
     price: "Rp450.000",
-    serviceSlug: "premium-detail", // Menambahkan serviceSlug
+    serviceSlug: "premium-detail",
     features: [
       "3x kunjungan ke rumah",
       "Full Wash di lokasi Anda",
@@ -87,7 +87,7 @@ const Services = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {services.map((service, index) => {
-            const slug = slugify(service.title); // Menambahkan slug untuk URL
+            const slug = slugify(service.title);
             return (
               <motion.div
                 key={index}
@@ -98,7 +98,7 @@ const Services = () => {
                 className="bg-white border rounded-2xl shadow-md p-8 text-center cursor-pointer hover:shadow-lg transition"
               >
                 <Link
-                  to={`/services/${slug}`} // Mengarahkan ke halaman detail layanan
+                  to={`/services/${slug}`}
                   className="block"
                 >
                   <h3 className="text-xl font-semibold mb-4">{service.title}</h3>
@@ -142,7 +142,7 @@ const Services = () => {
               className="bg-white border rounded-2xl shadow-md p-8 text-center cursor-pointer hover:shadow-lg transition"
             >
               <Link
-                to={`/services/${bundle.serviceSlug}`} // Mengarahkan ke halaman detail bundling
+                to={`/services/${bundle.serviceSlug}`}
                 className="block"
               >
                 <h3 className="text-xl font-semibold mb-4">{bundle.title}</h3>
