@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
 import logoFreshwash from "../assets/freshwash-logo.png";
 
@@ -21,31 +20,38 @@ const SignIn = () => {
     }
     setError("");
 
-    try {
-      const response = await axios.post('backend API', {
-        email: formData.email,
-        password: formData.password,
+    // Mock login check
+    if (formData.email === "admin@freshwash.com" && formData.password === "admin123") {
+      // Admin login
+      localStorage.setItem("token", "mock-admin-token");
+      localStorage.setItem("role", "admin");  // set role to 'admin'
+
+      Swal.fire({
+        icon: "success",
+        title: "Admin Login Successful!",
+        text: "Welcome, Admin!",
+        timer: 2000,
+        showConfirmButton: false,
       });
 
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        Swal.fire({
-          icon: 'success',
-          title: 'Login Successful!',
-          text: 'Welcome back to FreshWash!',
-          timer: 2000,
-          showConfirmButton: false,
-        });
+      navigate("/");
+    } else if (formData.email === "user@freshwash.com" && formData.password === "user123") {
+      // Regular user login
+      localStorage.setItem("token", "mock-user-token");
+      localStorage.setItem("role", "user");  // set role to 'user'
 
-        navigate('/');
-      }
-    } catch (err) {
-      console.error(err);
-      if (err.response?.data?.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("Login failed. Please check your credentials.");
-      }
+      Swal.fire({
+        icon: "success",
+        title: "Login Successful!",
+        text: "Welcome back to FreshWash!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      navigate("/");
+    } else {
+      // Invalid credentials
+      setError("Login failed. Please check your credentials.");
     }
   };
 
