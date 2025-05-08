@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 
 const MainLayout = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const role = localStorage.getItem("role");
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -48,6 +49,14 @@ const MainLayout = ({ children }) => {
             >
               Profile
             </Link>
+            {role === "admin" && (
+              <Link
+                to="/admin"
+                className="text-stone-950 hover:text-gray-500 transition-colors duration-200"
+              >
+                Admin
+              </Link>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -108,6 +117,15 @@ const MainLayout = ({ children }) => {
             >
               Profile
             </Link>
+            {role === "admin" && (
+              <Link
+                to="/admin"
+                onClick={toggleMenu}
+                className="text-stone-950 hover:text-gray-700 transition-colors duration-200"
+              >
+                Admin
+              </Link>
+            )}
           </div>
         )}
       </header>
