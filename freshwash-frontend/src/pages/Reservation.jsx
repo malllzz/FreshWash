@@ -39,9 +39,50 @@ const Reservation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
-  
-    const [hour, minute] = formData.time.split(":").map(Number);
-    if (hour < 8 || hour > 21 || (hour === 21 && minute > 0)) {
+
+    // Mendapatkan tanggal dan waktu saat ini
+    const now = new Date();
+    const currentDate = now.toISOString().split("T")[0]; // Format yyyy-mm-dd
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    // Mendapatkan tanggal dan waktu dari input form
+    const selectedDate = formData.date;
+    const [selectedHour, selectedMinute] = formData.time.split(":").map(Number);
+
+    // Cek apakah tanggal yang dipilih lebih kecil dari tanggal sekarang
+    if (selectedDate < currentDate) {
+      await Swal.fire({
+        icon: "error",
+        title: "Tanggal Tidak Valid",
+        text: "Tanggal yang dipilih sudah lewat.",
+        confirmButtonColor: "#ef4444",
+      });
+      return;
+    }
+
+    // Jika tanggal sama dengan hari ini, pastikan waktu yang dipilih lebih besar dari waktu saat ini
+    if (selectedDate === currentDate) {
+      if (
+        selectedHour < currentHour ||
+        (selectedHour === currentHour && selectedMinute < currentMinute)
+      ) {
+        await Swal.fire({
+          icon: "error",
+          title: "Waktu Tidak Valid",
+          text: "Anda tidak bisa memilih waktu yang sudah terlewat pada hari ini.",
+          confirmButtonColor: "#ef4444",
+        });
+        return;
+      }
+    }
+
+    // Validasi waktu antara 08:00 hingga 21:00
+    if (
+      selectedHour < 8 ||
+      selectedHour > 21 ||
+      (selectedHour === 21 && selectedMinute > 0)
+    ) {
       await Swal.fire({
         icon: "error",
         title: "Waktu Tidak Valid",
@@ -50,15 +91,15 @@ const Reservation = () => {
       });
       return;
     }
-  
+
     const formattedDate = formData.date.replace(/-/g, "");
     const formattedTime = formData.time.replace(":", "");
     const orderId = `FW-${formattedDate}-${formattedTime}-${Date.now()}`;
-  
+
     try {
       await emailjs.send(
-        "service_lxj1ie5",
-        "template_lnyy2wu",
+        // "service_lxj1ie5",
+        // "template_lnyy2wu",
         {
           order_id: orderId,
           to_name: formData.name,
@@ -69,30 +110,30 @@ const Reservation = () => {
           service_package: formData.servicePackage,
           voucher_code: formData.voucherCode || "Tidak ada",
         },
-        "CJF0hZJOtiozGkRx2"
+        // "CJF0hZJOtiozGkRx2"
       );
-  
+
       await Swal.fire({
         icon: "success",
         title: "Reservasi Berhasil!",
         text: `Order ID: ${orderId} telah dikirim ke ${formData.email}`,
         confirmButtonColor: "#0ea5e9",
       });
-  
+
       navigate("/");
     } catch (error) {
       console.error("Gagal mengirim email:", error);
-  
+
       await Swal.fire({
         icon: "warning",
         title: "Reservasi Berhasil!",
         text: "Namun gagal mengirim email konfirmasi.",
         confirmButtonColor: "#facc15",
       });
-  
+
       navigate("/");
     }
-  };  
+  };
 
   return (
     <MainLayout>
@@ -136,7 +177,9 @@ const Reservation = () => {
 
             {/* Plat Nomor */}
             <div>
-              <label className="block text-gray-700 mb-2">Plat Nomor Kendaraan</label>
+              <label className="block text-gray-700 mb-2">
+                Plat Nomor Kendaraan
+              </label>
               <input
                 type="text"
                 name="plateNumber"
@@ -150,7 +193,9 @@ const Reservation = () => {
 
             {/* Tanggal */}
             <div>
-              <label className="block text-gray-700 mb-2">Tanggal Reservasi</label>
+              <label className="block text-gray-700 mb-2">
+                Tanggal Reservasi
+              </label>
               <input
                 type="date"
                 name="date"
@@ -164,7 +209,9 @@ const Reservation = () => {
 
             {/* Waktu */}
             <div>
-              <label className="block text-gray-700 mb-2">Waktu Reservasi</label>
+              <label className="block text-gray-700 mb-2">
+                Waktu Reservasi
+              </label>
               <input
                 type="time"
                 name="time"
@@ -177,7 +224,9 @@ const Reservation = () => {
 
             {/* Paket */}
             <div>
-              <label className="block text-gray-700 mb-2">Pilih Paket Layanan</label>
+              <label className="block text-gray-700 mb-2">
+                Pilih Paket Layanan
+              </label>
               <select
                 name="servicePackage"
                 value={formData.servicePackage}
@@ -189,15 +238,23 @@ const Reservation = () => {
                 <option value="Express Wash">Express Wash</option>
                 <option value="Full Wash">Full Wash</option>
                 <option value="Premium Detail">Premium Detail</option>
-                <option value="Bundling 5x Cuci Express">Bundling 5x Cuci Express</option>
-                <option value="Bundling Full Wash + Antar Jemput">Bundling Full Wash + Antar Jemput</option>
-                <option value="Bundling Home Service">Bundling Home Service</option>
+                <option value="Bundling 5x Cuci Express">
+                  Bundling 5x Cuci Express
+                </option>
+                <option value="Bundling Full Wash + Antar Jemput">
+                  Bundling Full Wash + Antar Jemput
+                </option>
+                <option value="Bundling Home Service">
+                  Bundling Home Service
+                </option>
               </select>
             </div>
 
             {/* Voucher */}
             <div>
-              <label className="block text-gray-700 mb-2">Kode Voucher (Opsional)</label>
+              <label className="block text-gray-700 mb-2">
+                Kode Voucher (Opsional)
+              </label>
               <input
                 type="text"
                 name="voucherCode"
@@ -212,12 +269,11 @@ const Reservation = () => {
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-sky-500 hover:bg-sky-600 text-white font-semibold px-8 py-3 rounded-full shadow-md transition"
+                className="bg-sky-500 hover:bg-sky-600 text-white font-semibold px-8 py-3 rounded-full shadow-md transition cursor-pointer"
               >
                 Konfirmasi Reservasi
               </button>
             </div>
-
           </form>
         </motion.div>
       </section>
