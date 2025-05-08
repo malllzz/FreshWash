@@ -1,7 +1,7 @@
-import Router from './routes/router'; // Mengimpor komponen Router dari file router.jsx
+import Router from './routes/router';
 
 function App() {
-  return <Router />; // Hanya merender komponen Router
+  return <Router />;
 }
 
 export default App;
