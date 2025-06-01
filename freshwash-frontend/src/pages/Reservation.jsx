@@ -9,7 +9,7 @@ import axios from "axios";
 const Reservation = () => {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,7 +48,9 @@ const Reservation = () => {
 
     const fetchServices = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/reservations/services");
+        const res = await axios.get(
+          "http://localhost:3000/api/reservations/services"
+        );
         setServices(res.data);
       } catch (err) {
         console.error("Gagal mengambil layanan:", err);
@@ -114,23 +116,30 @@ const Reservation = () => {
       return;
     }
 
-    const orderId = `FW-${formData.date.replace(/-/g, "")}-${formData.time.replace(":", "")}-${Date.now()}`;
+    const orderId = `FW-${formData.date.replace(
+      /-/g,
+      ""
+    )}-${formData.time.replace(":", "")}-${Date.now()}`;
 
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/reservations", {
-        name: formData.name,
-        plateNumber: formData.plateNumber,
-        orderDate: formData.date,
-        timeOrder: formData.time,
-        serviceId: formData.serviceId,
-        userEmail: formData.email, 
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await axios.post(
+        "http://localhost:3000/api/reservations",
+        {
+          name: formData.name,
+          plateNumber: formData.plateNumber,
+          orderDate: formData.date,
+          timeOrder: formData.time,
+          serviceId: formData.serviceId,
+          userEmail: formData.email,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       const orderCode = response.data.order_code;
 
@@ -142,7 +151,8 @@ const Reservation = () => {
         reservation_date: formData.date,
         reservation_time: formData.time,
         service_package:
-          services.find((s) => s.service_id === parseInt(formData.serviceId))?.name || "",
+          services.find((s) => s.service_id === parseInt(formData.serviceId))
+            ?.name || "",
       };
 
       console.log("DEBUG EMAILJS >>", emailPayload);
@@ -189,7 +199,9 @@ const Reservation = () => {
           transition={{ duration: 0.6 }}
           className="bg-white p-8 shadow-md rounded-2xl max-w-2xl mx-auto"
         >
-          <h2 className="text-3xl font-bold text-center mb-8">Formulir Reservasi</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">
+            Formulir Reservasi
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-gray-700 mb-2">Nama</label>
@@ -214,13 +226,18 @@ const Reservation = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Plat Nomor Kendaraan</label>
+              <label className="block text-gray-700 mb-2">
+                Plat Nomor Kendaraan
+              </label>
               <input
                 type="text"
                 name="plateNumber"
                 value={formData.plateNumber}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, plateNumber: e.target.value.toUpperCase() }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    plateNumber: e.target.value.toUpperCase(),
+                  }))
                 }
                 placeholder="Contoh: B 1234 ABC"
                 className="w-full border rounded-lg p-3"
@@ -228,7 +245,9 @@ const Reservation = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Tanggal Reservasi</label>
+              <label className="block text-gray-700 mb-2">
+                Tanggal Reservasi
+              </label>
               <input
                 type="date"
                 name="date"
@@ -240,7 +259,9 @@ const Reservation = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Waktu Reservasi</label>
+              <label className="block text-gray-700 mb-2">
+                Waktu Reservasi
+              </label>
               <input
                 type="time"
                 name="time"
@@ -251,7 +272,9 @@ const Reservation = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 mb-2">Pilih Paket Layanan</label>
+              <label className="block text-gray-700 mb-2">
+                Pilih Paket Layanan
+              </label>
               <select
                 name="serviceId"
                 value={formData.serviceId}
@@ -259,10 +282,15 @@ const Reservation = () => {
                 className="w-full border rounded-lg p-3"
                 required
               >
-                <option value="">-- Pilih Paket --</option>
+                <option value="" disabled>
+                  --- Pilih Layanan yang Anda Inginkan ---
+                </option>
                 {services.map((service) => (
                   <option key={service.service_id} value={service.service_id}>
-                    {service.name}
+                    {service.name} — Rp{" "}
+                    {Number(service.price).toLocaleString("id-ID", {
+                      maximumFractionDigits: 0,
+                    })}
                   </option>
                 ))}
               </select>

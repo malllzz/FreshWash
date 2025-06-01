@@ -20,11 +20,14 @@ const EditProfile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:3000/api/user/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:3000/api/user/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setForm((prev) => ({
           ...prev,
           name: response.data.name || "",
@@ -54,6 +57,21 @@ const EditProfile = () => {
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      return Swal.fire("Error", "Format email tidak valid.", "error");
+    }
+
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (!phoneRegex.test(form.phone)) {
+      return Swal.fire(
+        "Error",
+        "Nomor telepon tidak valid. Gunakan 10-15 digit angka saja.",
+        "error"
+      );
+    }
+
     const formData = new FormData();
     formData.append("name", form.name);
     formData.append("email", form.email);
@@ -69,7 +87,11 @@ const EditProfile = () => {
       });
       Swal.fire("Sukses", "Profil berhasil diperbarui", "success");
     } catch (error) {
-      Swal.fire("Gagal", error.response?.data?.message || "Gagal update profil", "error");
+      Swal.fire(
+        "Gagal",
+        error.response?.data?.message || "Gagal update profil",
+        "error"
+      );
     }
   };
 
@@ -80,22 +102,30 @@ const EditProfile = () => {
     }
 
     try {
-      await axios.put("http://localhost:3000/api/user/profile", {
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        oldPassword: form.oldPassword,
-        newPassword: form.newPassword,
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      await axios.put(
+        "http://localhost:3000/api/user/profile",
+        {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          oldPassword: form.oldPassword,
+          newPassword: form.newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      });
+      );
 
       Swal.fire("Sukses", "Password berhasil diubah", "success");
       setForm((prev) => ({ ...prev, oldPassword: "", newPassword: "" }));
     } catch (error) {
-      Swal.fire("Gagal", error.response?.data?.message || "Gagal mengubah password", "error");
+      Swal.fire(
+        "Gagal",
+        error.response?.data?.message || "Gagal mengubah password",
+        "error"
+      );
     }
   };
 
@@ -111,10 +141,17 @@ const EditProfile = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete("/api/user/account");
-        Swal.fire("Deleted!", "Akun anda telah dihapus.", "success").then(() => {
-          window.location.href = "/";
+        await axios.delete("http://localhost:3000/api/user/account", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
+        Swal.fire("Deleted!", "Akun anda telah dihapus.", "success").then(
+          () => {
+            localStorage.removeItem("token");
+            window.location.href = "/";
+          }
+        );
       } catch (error) {
         Swal.fire("Error", "Gagal menghapus akun", "error");
       }
@@ -134,7 +171,7 @@ const EditProfile = () => {
     if (confirm.isConfirmed) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete("/api/user/profile/photo", {
+        await axios.delete("http://localhost:3000/api/user/profile/photo", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -161,12 +198,20 @@ const EditProfile = () => {
           <h2 className="text-2xl font-semibold mb-6">Edit Profil</h2>
 
           {/* FORM EDIT PROFIL */}
-          <form onSubmit={handleUpdateProfile} className="space-y-4" encType="multipart/form-data">
+          <form
+            onSubmit={handleUpdateProfile}
+            className="space-y-4"
+            encType="multipart/form-data"
+          >
             <div>
               <label className="block mb-1 font-medium">Foto Profil</label>
               {photoPreview && (
                 <>
-                  <img src={photoPreview} alt="Preview" className="w-24 h-24 rounded-full object-cover mb-2" />
+                  <img
+                    src={photoPreview}
+                    alt="Preview"
+                    className="w-24 h-24 rounded-full object-cover mb-2"
+                  />
                   <button
                     type="button"
                     onClick={handleRemovePhoto}
@@ -197,41 +242,82 @@ const EditProfile = () => {
 
             <div>
               <label className="block mb-1 font-medium">Nama</label>
-              <input type="text" name="name" className="w-full border px-4 py-2 rounded" value={form.name} onChange={handleChange} required />
+              <input
+                type="text"
+                name="name"
+                className="w-full border px-4 py-2 rounded"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div>
               <label className="block mb-1 font-medium">Email</label>
-              <input type="email" name="email" className="w-full border px-4 py-2 rounded" value={form.email} onChange={handleChange} required />
+              <input
+                type="email"
+                name="email"
+                className="w-full border px-4 py-2 rounded"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div>
               <label className="block mb-1 font-medium">Nomor Telepon</label>
-              <input type="tel" name="phone" className="w-full border px-4 py-2 rounded" value={form.phone} onChange={handleChange} required />
+              <input
+                type="tel"
+                name="phone"
+                className="w-full border px-4 py-2 rounded"
+                value={form.phone}
+                onChange={handleChange}
+                required
+              />
             </div>
 
-            <button type="submit" className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+            <button
+              type="submit"
+              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+            >
               Simpan Profil
             </button>
           </form>
 
           <hr className="my-8" />
 
-          {/* FORM UBAH PASSWORD */}
+          {/* Form Ubah Password */}
           <form onSubmit={handleChangePassword} className="space-y-4">
             <h3 className="text-lg font-semibold">Ubah Password</h3>
 
             <div>
-              <label className="block mb-1 font-medium">Password Saat Ini</label>
-              <input type="password" name="oldPassword" className="w-full border px-4 py-2 rounded" value={form.oldPassword} onChange={handleChange} />
+              <label className="block mb-1 font-medium">
+                Password Saat Ini
+              </label>
+              <input
+                type="password"
+                name="oldPassword"
+                className="w-full border px-4 py-2 rounded"
+                value={form.oldPassword}
+                onChange={handleChange}
+              />
             </div>
 
             <div>
               <label className="block mb-1 font-medium">Password Baru</label>
-              <input type="password" name="newPassword" className="w-full border px-4 py-2 rounded" value={form.newPassword} onChange={handleChange} />
+              <input
+                type="password"
+                name="newPassword"
+                className="w-full border px-4 py-2 rounded"
+                value={form.newPassword}
+                onChange={handleChange}
+              />
             </div>
 
-            <button type="submit" className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600">
+            <button
+              type="submit"
+              className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600"
+            >
               Ubah Password
             </button>
           </form>
@@ -239,7 +325,10 @@ const EditProfile = () => {
           <hr className="my-8" />
 
           <div className="text-right">
-            <button onClick={handleDeleteAccount} className="text-red-600 hover:underline">
+            <button
+              onClick={handleDeleteAccount}
+              className="text-red-600 hover:underline cursor-pointer"
+            >
               Hapus Akun
             </button>
           </div>
@@ -250,4 +339,3 @@ const EditProfile = () => {
 };
 
 export default EditProfile;
-

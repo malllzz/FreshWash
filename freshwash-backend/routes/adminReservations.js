@@ -19,9 +19,10 @@ router.get('/reservations', adminMiddleware, async (req, res) => {
       `SELECT 
         o.order_id AS id,
         u.name,
-        u.phone_number AS phone,
+        u.phone_number AS phone_number,
         o.plate_number AS plate,
         s.name AS service,
+        o.order_date,
         s.price,
         o.status
       FROM orders o

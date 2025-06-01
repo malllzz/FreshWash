@@ -6,7 +6,11 @@ import logoFreshwash from "../assets/freshwash-logo.png";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
-    nama: "", email: "", phone: "", password: "", confirmPassword: ""
+    nama: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,8 +23,22 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    if (!emailRegex.test(formData.email)) {
+      setError("Format email tidak valid. Gunakan email yang benar.");
+      return;
+    }
+
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      setError("Nomor telepon tidak valid. Gunakan 10-15 digit angka saja.");
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
-      setError("Password yang anda buat tidak sama dengan konfirmasi password.");
+      setError(
+        "Password yang anda buat tidak sama dengan konfirmasi password."
+      );
       return;
     }
 
@@ -28,24 +46,27 @@ const SignUp = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/signup", {
-        nama: formData.nama,
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password,
-      });
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/signup",
+        {
+          nama: formData.nama,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        }
+      );
 
       console.log("Signup success:", response.data);
 
       Swal.fire({
-        icon: 'success',
-        title: 'Akun Berhasil Dibuat!',
-        text: 'Silakan SignIn dengan Akun Anda',
+        icon: "success",
+        title: "Akun Berhasil Dibuat!",
+        text: "Silakan SignIn dengan Akun Anda",
         timer: 2000,
         showConfirmButton: false,
       });
 
-      navigate('/signin');
+      navigate("/signin");
     } catch (err) {
       console.error(err);
       if (err.response?.data?.message) {
@@ -76,7 +97,10 @@ const SignUp = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Nama */}
           <div>
-            <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="nama"
+              className="block text-sm font-medium text-gray-700"
+            >
               Nama Lengkap
             </label>
             <div className="mt-2">
@@ -97,7 +121,10 @@ const SignUp = () => {
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <div className="mt-2">
@@ -118,7 +145,10 @@ const SignUp = () => {
 
           {/* Phone */}
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-700"
+            >
               Nomor Telepon
             </label>
             <div className="mt-2">
@@ -139,7 +169,10 @@ const SignUp = () => {
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <div className="mt-2">
@@ -160,7 +193,10 @@ const SignUp = () => {
 
           {/* Confirm Password */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700"
+            >
               Konfirmasi Password
             </label>
             <div className="mt-2">
@@ -180,11 +216,7 @@ const SignUp = () => {
           </div>
 
           {/* Error Message */}
-          {error && (
-            <div className="text-sm text-red-600">
-              {error}
-            </div>
-          )}
+          {error && <div className="text-sm text-red-600">{error}</div>}
 
           {/* Submit Button */}
           <div>
@@ -194,7 +226,9 @@ const SignUp = () => {
                          text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 
                          focus-visible:outline focus-visible:outline-2 
                          focus-visible:outline-offset-2 focus-visible:outline-indigo-600 
-                         ${isLoading ? "cursor-not-allowed bg-indigo-400" : ""}`}
+                         ${
+                           isLoading ? "cursor-not-allowed bg-indigo-400" : ""
+                         }`}
               disabled={isLoading}
             >
               {isLoading ? (

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import axios from "axios"; 
+import axios from "axios";
 import logoFreshwash from "../assets/freshwash-logo.png";
 
 const SignIn = () => {
@@ -20,8 +20,16 @@ const SignIn = () => {
     const cleanedEmail = formData.email.trim().toLowerCase();
     const cleanedPassword = formData.password.trim();
 
+    // Regex validasi email sederhana
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!cleanedEmail || !cleanedPassword) {
       setError("Please fill in all fields.");
+      return;
+    }
+
+    if (!emailRegex.test(cleanedEmail)) {
+      setError("Format email tidak valid.");
       return;
     }
 
@@ -29,10 +37,13 @@ const SignIn = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/signin", {
-        email: cleanedEmail,
-        password: cleanedPassword,
-      });
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/signin",
+        {
+          email: cleanedEmail,
+          password: cleanedPassword,
+        }
+      );
 
       if (response.status === 200) {
         const { token, role } = response.data;
@@ -42,8 +53,8 @@ const SignIn = () => {
 
         Swal.fire({
           icon: "success",
-          title: "Login Successful!",
-          text: `Welcome back, ${role}!`,
+          title: "Berhasil Masuk!",
+          text: `Selamat datang kembali, ${role}!`,
           timer: 2000,
           showConfirmButton: false,
         });
@@ -52,11 +63,16 @@ const SignIn = () => {
       }
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
-      setError(error.response?.data?.message || "Login failed. Please check your credentials.");
+      setError(
+        error.response?.data?.message ||
+          "Login failed. Please check your credentials."
+      );
     } finally {
       setIsLoading(false);
     }
   };
+
+  const adminWhatsAppNumber = "6281234567890";
 
   return (
     <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-gray-100">
@@ -101,13 +117,35 @@ const SignIn = () => {
 
           {/* Password */}
           <div>
-            <div className="flex items-center justify-between">
+            <div className="flex justify-between items-center">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
                 Password
               </label>
+              <span
+                onClick={() => {
+                  const email = formData.email.trim();
+                  if (!email) {
+                    Swal.fire({
+                      icon: "warning",
+                      title: "Email belum diisi",
+                      text: "Mohon isi email terlebih dahulu untuk reset password.",
+                    });
+                    return;
+                  }
+                  const message = encodeURIComponent(
+                    `Halo, Admin. Saya ingin reset password dengan email ${email}`
+                  );
+                  const url = `https://wa.me/${adminWhatsAppNumber}?text=${message}`;
+                  window.open(url, "_blank");
+                }}
+                className="text-sm text-indigo-600 cursor-pointer hover:underline"
+                title="Reset Password via WhatsApp"
+              >
+                Reset Password
+              </span>
             </div>
             <div className="mt-2">
               <input
@@ -120,8 +158,8 @@ const SignIn = () => {
                 value={formData.password}
                 onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-2 text-gray-900 shadow-sm 
-                           ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
-                           focus:ring-2 focus:ring-sky-400 sm:text-sm"
+                 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 
+                 focus:ring-2 focus:ring-sky-400 sm:text-sm"
               />
             </div>
           </div>
@@ -137,8 +175,10 @@ const SignIn = () => {
                          text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 
                          focus-visible:outline focus-visible:outline-2 
                          focus-visible:outline-offset-2 focus-visible:outline-indigo-600 
-                         ${isLoading ? "cursor-not-allowed bg-indigo-400" : ""}`}
-              disabled={isLoading} 
+                         ${
+                           isLoading ? "cursor-not-allowed bg-indigo-400" : ""
+                         }`}
+              disabled={isLoading}
             >
               {isLoading ? (
                 <div className="spinner-border animate-spin w-6 h-6 border-4 border-t-4 border-white rounded-full"></div>
@@ -151,7 +191,7 @@ const SignIn = () => {
 
         {/* Don't have account */}
         <p className="mt-6 text-center text-sm text-gray-600">
-            Belum memiliki akun?{" "}
+          Belum memiliki akun?{" "}
           <Link
             to="/signup"
             className="font-semibold text-indigo-600 hover:text-indigo-500"

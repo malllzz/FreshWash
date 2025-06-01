@@ -109,13 +109,25 @@ router.delete('/profile/photo', authMiddleware, async (req, res) => {
 
 router.delete('/account', authMiddleware, async (req, res) => {
     const userId = req.user.id;
+
     try {
+        const [rows] = await db.execute('SELECT photo_url FROM users WHERE user_id = ?', [userId]);
+        const photoUrl = rows[0]?.photo_url;
+        if (photoUrl) {
+            const filePath = path.join(__dirname, '..', photoUrl.replace(`${req.protocol}://${req.get('host')}/`, ''));
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+
         await db.execute('DELETE FROM users WHERE user_id = ?', [userId]);
+
         res.json({ message: 'Akun berhasil dihapus.' });
     } catch (err) {
         console.error("Gagal menghapus akun:", err);
         res.status(500).json({ message: 'Gagal menghapus akun.' });
     }
 });
+
 
 module.exports = router;

@@ -11,11 +11,14 @@ const History = () => {
     const fetchHistory = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:3000/api/user/reservations/history", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:3000/api/user/reservations/history",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setReservations(response.data);
       } catch (err) {
         console.error("Gagal memuat riwayat reservasi:", err);
@@ -49,8 +52,8 @@ const History = () => {
         </style>
         <div id="star-rating">
           ${[1, 2, 3, 4, 5]
-          .map((i) => `<span class="star" data-value="${i}">☆</span>`)
-          .join("")}
+            .map((i) => `<span class="star" data-value="${i}">☆</span>`)
+            .join("")}
         </div>
         <textarea id="comment" class="swal2-textarea" placeholder="Komentar Anda..."></textarea>
       `,
@@ -98,10 +101,7 @@ const History = () => {
         try {
           await axios.post(
             `http://localhost:3000/api/user/reservations/${reservationId}/review`,
-            {
-              rating,
-              comment,
-            },
+            { rating, comment },
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -109,10 +109,21 @@ const History = () => {
             }
           );
 
+          // Update state reservations supaya hasReviewed true untuk reservation ini
+          setReservations((prevReservations) =>
+            prevReservations.map((r) =>
+              r.id === reservationId ? { ...r, hasReviewed: true } : r
+            )
+          );
+
           Swal.fire("Terima Kasih!", "Review Anda telah dikirim.", "success");
         } catch (error) {
           console.error("Gagal mengirim review:", error);
-          Swal.fire("Gagal", "Review gagal dikirim. Silakan coba lagi.", "error");
+          Swal.fire(
+            "Gagal",
+            "Review gagal dikirim. Silakan coba lagi.",
+            "error"
+          );
         }
       }
     });
@@ -149,13 +160,16 @@ const History = () => {
               {reservation.status === "Selesai" && (
                 <button
                   onClick={() => handleReview(reservation.id)}
-                  className={`mt-3 px-4 py-2 ${reservation.hasReviewed
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 cursor-pointer hover:bg-blue-700"
-                    } text-white rounded`}
+                  className={`mt-3 px-4 py-2 ${
+                    reservation.hasReviewed
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-600 cursor-pointer hover:bg-blue-700"
+                  } text-white rounded`}
                   disabled={reservation.hasReviewed}
                 >
-                  {reservation.hasReviewed ? "Anda telah memberikan review" : "Beri Review"}
+                  {reservation.hasReviewed
+                    ? "Anda telah memberikan review"
+                    : "Beri Review"}
                 </button>
               )}
             </div>
