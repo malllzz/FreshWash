@@ -72,11 +72,11 @@ const Profile = () => {
   const handleLogout = (e) => {
     e.preventDefault();
     Swal.fire({
-      title: "Anda yakin ingin Signout?",
+      title: "Anda yakin ingin Keluar?",
       text: "Semua sesi Anda akan berakhir.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Ya, Signout!",
+      confirmButtonText: "Ya, Keluar!",
       cancelButtonText: "Batal",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -141,7 +141,7 @@ const Profile = () => {
             className="flex items-center px-4 py-3 hover:bg-gray-50 text-red-600"
           >
             <LogOut className="w-5 h-5 mr-3" />
-            <span>Signout</span>
+            <span>Keluar</span>
           </a>
         </div>
       </motion.div>

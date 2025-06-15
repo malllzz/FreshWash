@@ -4,7 +4,8 @@ import Swal from "sweetalert2";
 
 const ReservationsData = () => {
   const [reservationList, setReservationList] = useState([]);
-  const [sortOption, setSortOption] = useState("id-desc"); // default: ID terbaru dulu
+  const [sortOption, setSortOption] = useState("id-desc");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchReservations = async () => {
@@ -102,7 +103,16 @@ const ReservationsData = () => {
     }
   };
 
-  const sortedReservations = [...reservationList].sort((a, b) => {
+  const filteredReservations = [...reservationList].filter((res) => {
+    const keyword = searchQuery.toLowerCase();
+    return (
+      res.name.toLowerCase().includes(keyword) ||
+      res.phone_number.toLowerCase().includes(keyword) ||
+      res.plate.toLowerCase().includes(keyword)
+    );
+  });
+
+  const sortedReservations = filteredReservations.sort((a, b) => {
     switch (sortOption) {
       case "id-asc":
         return a.id - b.id;
@@ -121,18 +131,30 @@ const ReservationsData = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Data Reservasi</h2>
 
-      <div className="mb-4">
-        <label className="mr-2 font-semibold">Urutkan berdasarkan:</label>
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          className="border rounded px-2 py-1"
-        >
-          <option value="id-desc">ID - Terbaru</option>
-          <option value="id-asc">ID - Terlama</option>
-          <option value="date-desc">Tanggal - Terbaru</option>
-          <option value="date-asc">Tanggal - Terlama</option>
-        </select>
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <label className="mr-2 font-semibold">Urutkan berdasarkan:</label>
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className="border rounded px-2 py-1"
+          >
+            <option value="id-desc">ID - Terbaru</option>
+            <option value="id-asc">ID - Terlama</option>
+            <option value="date-desc">Tanggal - Terbaru</option>
+            <option value="date-asc">Tanggal - Terlama</option>
+          </select>
+        </div>
+
+        <div className="w-full sm:w-auto sm:ml-auto">
+          <input
+            type="text"
+            placeholder="Cari nama, nomor telepon, atau plat..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border rounded px-3 py-2 w-full sm:w-80"
+          />
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -173,7 +195,6 @@ const ReservationsData = () => {
                     className="border border-gray-300 rounded px-2 py-1"
                   >
                     <option value="pending">Pending</option>
-                    <option value="scheduled">Scheduled</option>
                     <option value="dibatalkan">Dibatalkan</option>
                     <option value="dalam_antrian">Dalam Antrean</option>
                     <option value="sedang_dicuci">Sedang Dicuci</option>

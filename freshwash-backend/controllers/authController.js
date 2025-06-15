@@ -10,7 +10,7 @@ exports.signUp = async (req, res) => {
   try {
     const [existing] = await db.execute('SELECT * FROM users WHERE LOWER(email) = ?', [cleanedEmail]);
     if (existing.length > 0) {
-      return res.status(400).json({ message: 'Email already registered' });
+      return res.status(400).json({ message: 'Email sudah terdaftar' });
     }
 
     const hashedPassword = await bcrypt.hash(cleanedPassword, 10);
@@ -42,7 +42,7 @@ exports.signIn = async (req, res) => {
 
     if (!user) {
       console.log("User not found");
-      return res.status(400).json({ message: 'Invalid credentials (email not found)' });
+      return res.status(400).json({ message: 'Kredensial tidak valid (email tidak ditemukan)' });
     }
 
     console.log("User found. Stored hash:", user.password);
@@ -51,7 +51,7 @@ exports.signIn = async (req, res) => {
 
     if (!isMatch) {
       console.log("Password mismatch");
-      return res.status(400).json({ message: 'Invalid credentials (wrong password)' });
+      return res.status(400).json({ message: 'Kredensial tidak valid (kata sandi salah)' });
     }
 
     const role = cleanedEmail === "loginadmin@freshwash.com" ? "admin" : "user";

@@ -172,7 +172,7 @@ const Reservation = () => {
       await Swal.fire({
         icon: "success",
         title: "Reservasi Berhasil!",
-        text: `Order ID: ${orderCode} telah dikirim ke ${formData.email}`,
+        text: `Reservasi dengan Order ID: ${orderCode} telah dikirim ke email ${formData.email}. Silakan cek kotak masuk atau folder spam.`,
         confirmButtonColor: "#0ea5e9",
       });
 

@@ -4,14 +4,13 @@ import Swal from "sweetalert2";
 
 const UsersData = () => {
   const [userList, setUserList] = useState([]);
-  const [sortOption, setSortOption] = useState("name-asc"); // default: A-Z
+  const [sortOption, setSortOption] = useState("name-asc");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/admin/users"
-        );
+        const response = await axios.get("http://localhost:3000/api/admin/users");
         setUserList(response.data);
       } catch (error) {
         console.error("Gagal mengambil data pengguna:", error);
@@ -66,7 +65,7 @@ const UsersData = () => {
       text: "Password akan diatur ulang ke default.",
       icon: "question",
       showCancelButton: true,
-      confirmButtonColor: "#f59e0b", // kuning
+      confirmButtonColor: "#f59e0b",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Ya, reset!",
       cancelButtonText: "Batal",
@@ -74,9 +73,7 @@ const UsersData = () => {
 
     if (result.isConfirmed) {
       try {
-        const res = await axios.patch(
-          `http://localhost:3000/api/admin/users/${id}/reset-password`
-        );
+        const res = await axios.patch(`http://localhost:3000/api/admin/users/${id}/reset-password`);
         Swal.fire({
           icon: "success",
           title: "Berhasil!",
@@ -93,7 +90,16 @@ const UsersData = () => {
     }
   };
 
-  const sortedUsers = [...userList].sort((a, b) => {
+  const filteredUsers = userList.filter((user) => {
+    const keyword = searchQuery.toLowerCase();
+    return (
+      user.name.toLowerCase().includes(keyword) ||
+      user.email.toLowerCase().includes(keyword) ||
+      user.phone_number.toLowerCase().includes(keyword)
+    );
+  });
+
+  const sortedUsers = [...filteredUsers].sort((a, b) => {
     switch (sortOption) {
       case "name-asc":
         return a.name.localeCompare(b.name);
@@ -108,19 +114,32 @@ const UsersData = () => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">Data Pengguna</h2>
 
-      {/* Sort Dropdown */}
-      <div className="mb-4">
-        <label className="mr-2 font-semibold">Urutkan berdasarkan:</label>
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          className="border rounded px-2 py-1"
-        >
-          <option value="name-asc">Nama (A-Z)</option>
-          <option value="name-desc">Nama (Z-A)</option>
-        </select>
+      {/* Sort + Search Bar */}
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <label className="mr-2 font-semibold">Urutkan berdasarkan:</label>
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className="border rounded px-2 py-1"
+          >
+            <option value="name-asc">Nama (A-Z)</option>
+            <option value="name-desc">Nama (Z-A)</option>
+          </select>
+        </div>
+
+        <div className="w-full sm:w-auto sm:ml-auto">
+          <input
+            type="text"
+            placeholder="Cari nama, email, atau telepon..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border rounded px-3 py-2 w-full sm:w-80"
+          />
+        </div>
       </div>
 
+      {/* Tabel Data Pengguna */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
           <thead className="bg-gray-100">

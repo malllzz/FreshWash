@@ -20,11 +20,11 @@ const SignIn = () => {
     const cleanedEmail = formData.email.trim().toLowerCase();
     const cleanedPassword = formData.password.trim();
 
-    // Regex validasi email sederhana
+    // Regex validasi email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!cleanedEmail || !cleanedPassword) {
-      setError("Please fill in all fields.");
+      setError("Pastikan semua kolom diisi.");
       return;
     }
 
@@ -65,7 +65,7 @@ const SignIn = () => {
       console.error("Login error:", error.response?.data || error.message);
       setError(
         error.response?.data?.message ||
-          "Login failed. Please check your credentials."
+          "Signin gagal. Silakan periksa kredensial Anda."
       );
     } finally {
       setIsLoading(false);

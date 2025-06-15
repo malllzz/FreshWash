@@ -109,7 +109,7 @@ const History = () => {
             }
           );
 
-          // Update state reservations supaya hasReviewed true untuk reservation ini
+          // Update state reservations
           setReservations((prevReservations) =>
             prevReservations.map((r) =>
               r.id === reservationId ? { ...r, hasReviewed: true } : r

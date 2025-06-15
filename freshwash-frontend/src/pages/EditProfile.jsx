@@ -57,7 +57,7 @@ const EditProfile = () => {
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       return Swal.fire("Error", "Format email tidak valid.", "error");
@@ -100,6 +100,17 @@ const EditProfile = () => {
     if (!form.oldPassword || !form.newPassword) {
       return Swal.fire("Error", "Silakan isi kedua kolom password", "error");
     }
+
+    const result = await Swal.fire({
+      title: "Anda yakin ingin mengganti password?",
+      text: "Pastikan Anda mengingat password baru yang akan digunakan.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, ganti password",
+      cancelButtonText: "Batal",
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       await axios.put(
@@ -278,7 +289,7 @@ const EditProfile = () => {
 
             <button
               type="submit"
-              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 cursor-pointer"
             >
               Simpan Profil
             </button>
@@ -316,7 +327,7 @@ const EditProfile = () => {
 
             <button
               type="submit"
-              className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600"
+              className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600 cursor-pointer"
             >
               Ubah Password
             </button>
